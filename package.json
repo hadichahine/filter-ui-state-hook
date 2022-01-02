@@ -4,6 +4,9 @@
   "main": "index.js",
   "author": "Hadi Chahine <hadi.n.chahine@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "test": "jest"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
