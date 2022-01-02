@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 export default function useFilter(options) {
-  const { filters } = options;
+  const { filters, reducer = (filters) => filters } = options;
 
   const [chosenFilters, setChosenFilters] = useState({});
 
@@ -90,16 +90,20 @@ export default function useFilter(options) {
     };
   }
 
-  function filter(filterManifest) {
-    const { type } = filterManifest;
-    if (type === "range") return createRangeFilter(filterManifest);
-    if (type === "multiselect") return createMultiSelectFilter(filterManifest);
-    if (type === "singleselect")
-      return createSingleSelectFilter(filterManifest);
-    return null;
-  }
-
   return {
-    filters: filters.map(filter),
+    filters: reducer(filters, chosenFilters).map((filterManifest) => {
+      const { type } = filterManifest;
+
+      switch (type) {
+        case "range":
+          return createRangeFilter(filterManifest);
+        case "multiselect":
+          return createMultiSelectFilter(filterManifest);
+        case "singleselect":
+          return createSingleSelectFilter(filterManifest);
+        default:
+          return null;
+      }
+    }),
   };
 }
