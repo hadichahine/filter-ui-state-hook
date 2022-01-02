@@ -26,10 +26,18 @@ export default function useFilter(options) {
           : type === "multiselect"
           ? {
               choose() {
-                setChosenFilters({
-                  ...chosenFilters,
-                  [filterId]: [...(chosenFilters[filterId] ?? []), optionId],
-                });
+                if ((chosenFilters[filterId] ?? []).includes(optionId))
+                  setChosenFilters({
+                    ...chosenFilters,
+                    [filterId]: chosenFilters[filterId].filter(
+                      (id) => id !== optionId
+                    ),
+                  });
+                else
+                  setChosenFilters({
+                    ...chosenFilters,
+                    [filterId]: [...(chosenFilters[filterId] ?? []), optionId],
+                  });
               },
               chosen: (chosenFilters[filterId] ?? []).includes(optionId),
             }
