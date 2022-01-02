@@ -1,3 +1,3 @@
-import useFilter from "./src/useFilter";
+import useFilterHook from "./src/useFilter";
 
-export const useFilter;
+export const useFilter = useFilterHook;
