@@ -3,5 +3,16 @@
   "version": "0.0.1",
   "main": "index.js",
   "author": "Hadi Chahine <hadi.n.chahine@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.16.7",
+    "@babel/preset-env": "^7.16.7",
+    "@testing-library/react-hooks": "^7.0.2",
+    "babel-jest": "^27.4.5",
+    "jest": "^27.4.5",
+    "react-test-renderer": "^17.0.2"
+  },
+  "dependencies": {
+    "react": "^17.0.2"
+  }
 }
