@@ -5,24 +5,35 @@ export default function useFilter(options) {
 
   const [chosenFilters, setChosenFilters] = useState({});
 
-  function choose(filterId, optionId) {
-    setChosenFilters({
-      ...chosenFilters,
-      [filterId]: optionId,
-    });
-  }
-
-  function filter({ id: filterId, options, ...remaining }) {
+  function filter({ id: filterId, options, type, ...remaining }) {
     return {
       ...remaining,
       id: filterId,
+      type,
       options: options.map(({ id: optionId, ...remaining }) => ({
         ...remaining,
         id: optionId,
-        choose() {
-          choose(filterId, optionId);
-        },
-        chosen: chosenFilters[filterId] === optionId,
+        ...(type === "singleselect"
+          ? {
+              choose() {
+                setChosenFilters({
+                  ...chosenFilters,
+                  [filterId]: optionId,
+                });
+              },
+              chosen: chosenFilters[filterId] === optionId,
+            }
+          : type === "multiselect"
+          ? {
+              choose() {
+                setChosenFilters({
+                  ...chosenFilters,
+                  [filterId]: [...(chosenFilters[filterId] ?? []), optionId],
+                });
+              },
+              chosen: (chosenFilters[filterId] ?? []).includes(optionId),
+            }
+          : { chosen: false, choose() {} }),
       })),
     };
   }
