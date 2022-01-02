@@ -1,8 +1,9 @@
 {
   "name": "filter-ui-state-hook",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "main": "index.js",
   "author": "Hadi Chahine <hadi.n.chahine@gmail.com>",
+  "repository": "https://github.com/hadichahine/filter-ui-state-hook",
   "license": "MIT",
   "scripts": {
     "test": "jest"
