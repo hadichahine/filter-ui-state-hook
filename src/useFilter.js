@@ -1,9 +1,58 @@
+import _ from "lodash";
 import { useState } from "react";
 
 export default function useFilter(options) {
   const { filters, reducer = (filters) => filters } = options;
 
   const [chosenFilters, setChosenFilters] = useState({});
+
+  function createTreeFilter(filterManifest) {
+    const { id: filterId, options = [], ...remaining } = filterManifest;
+
+    function treeOption({
+      id: optionId,
+      children = [],
+      parentPath = [],
+      ...remaining
+    }) {
+      return {
+        ...remaining,
+        id: optionId,
+        choose() {
+          choose([...parentPath, optionId]);
+        },
+        chosen: isChosen([...parentPath, optionId]),
+        children: children.map((childTreeOption) =>
+          treeOption({ ...childTreeOption, parentPath: [optionId] })
+        ),
+      };
+    }
+
+    function choose(path) {
+      let chosenFiltersSectionClone = { ...chosenFilters[filterId] };
+      if (!isChosen(path))
+        _.setWith(chosenFiltersSectionClone, path, {}, Object);
+      else
+        chosenFiltersSectionClone = _.omit(chosenFiltersSectionClone, [path]);
+      setChosenFilters({
+        ...chosenFilters,
+        [filterId]: chosenFiltersSectionClone,
+      });
+    }
+
+    function isChosen(path) {
+      return (
+        _.has(chosenFilters[filterId], path) &&
+        Object.entries(_.get(chosenFilters[filterId], path)).length === 0
+      );
+    }
+
+    return {
+      ...remaining,
+      id: filterId,
+      options: options.map(treeOption),
+    };
+  }
 
   function createRangeFilter(filterManifest) {
     const { id: filterId, options = [], ...remaining } = filterManifest;
@@ -74,19 +123,17 @@ export default function useFilter(options) {
     return {
       ...remaining,
       id: filterId,
-      ...(options && {
-        options: options.map(({ id: optionId, ...remaining }) => ({
-          ...remaining,
-          id: optionId,
-          choose() {
-            setChosenFilters({
-              ...chosenFilters,
-              [filterId]: optionId,
-            });
-          },
-          chosen: chosenFilters[filterId] === optionId,
-        })),
-      }),
+      options: options.map(({ id: optionId, ...remaining }) => ({
+        ...remaining,
+        id: optionId,
+        choose() {
+          setChosenFilters({
+            ...chosenFilters,
+            [filterId]: optionId,
+          });
+        },
+        chosen: chosenFilters[filterId] === optionId,
+      })),
     };
   }
 
@@ -101,9 +148,12 @@ export default function useFilter(options) {
           return createMultiSelectFilter(filterManifest);
         case "singleselect":
           return createSingleSelectFilter(filterManifest);
+        case "tree":
+          return createTreeFilter(filterManifest);
         default:
           return null;
       }
     }),
+    chosenFilters,
   };
 }
