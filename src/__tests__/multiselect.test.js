@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react-hooks";
-import { useFilter } from "../../index";
+import { useFilter } from "../../main";
 
 test("test multiselect filter to toggle multiple options", () => {
   const { result } = renderHook(() =>

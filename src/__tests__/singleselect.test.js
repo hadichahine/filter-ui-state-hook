@@ -1,5 +1,5 @@
 import { act, renderHook } from "@testing-library/react-hooks";
-import { useFilter } from "../../index";
+import { useFilter } from "../../main";
 
 test("test filter to be unchosen initially", () => {
   const { result } = renderHook(() =>
