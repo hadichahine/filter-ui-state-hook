@@ -11,6 +11,10 @@
     "build": "rollup -c",
     "clean": "rm -rf dist"
   },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": ">=16.8.0"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.7",
     "@babel/preset-env": "^7.16.7",
@@ -24,7 +28,6 @@
     "rollup-plugin-peer-deps-external": "^2.2.4"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
-    "react": "^17.0.2"
+    "lodash": "^4.17.21"
   }
 }
