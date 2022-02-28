@@ -56,3 +56,34 @@ test("test filter option to be chosen after choosing option", () => {
 
   expect(result.current.filters[0].options[0].chosen).toBe(true);
 });
+
+test("test single filter to toggle option and request chosen", () => {
+  const { result } = renderHook(() =>
+    useFilter({
+      filters: [
+        {
+          id: "category",
+          label: "Category",
+          type: "singleselect",
+          options: [
+            {
+              id: "a",
+              label: "A",
+            },
+            {
+              id: "b",
+              label: "B",
+            },
+          ],
+        },
+      ],
+    })
+  );
+
+  act(() => {
+    result.current.filters[0].options[0].choose();
+  });
+
+  expect(result.current.filter("category").chosen.id).toBe("a");
+  expect(result.current.filter("category").chosen.label).toBe("A");
+});

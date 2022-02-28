@@ -69,3 +69,34 @@ test("test filter to be disabled when choosen again", () => {
 
   expect(result.current.filters[0].options[0].chosen).toBe(false);
 });
+
+test("test multiselect filter to toggle multiple options and request chosen", () => {
+  const { result } = renderHook(() =>
+    useFilter({
+      filters: [
+        {
+          id: "category",
+          label: "Category",
+          type: "multiselect",
+          options: [
+            {
+              id: "a",
+              label: "A",
+            },
+            {
+              id: "b",
+              label: "B",
+            },
+          ],
+        },
+      ],
+    })
+  );
+
+  act(() => {
+    result.current.filters[0].options[0].choose();
+  });
+
+  expect(result.current.filter("category").chosen[0].id).toBe("a");
+  expect(result.current.filter("category").chosen[0].label).toBe("A");
+});

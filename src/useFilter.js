@@ -95,6 +95,9 @@ export default function useFilter(options) {
     return {
       ...remaining,
       id: filterId,
+      chosen: (chosenFilters[filterId] ?? []).map((optionId) =>
+        filterManifest.options.find(({ id }) => id === optionId)
+      ),
       options: options.map(({ id: optionId, ...remaining }) => ({
         ...remaining,
         id: optionId,
@@ -123,6 +126,9 @@ export default function useFilter(options) {
     return {
       ...remaining,
       id: filterId,
+      chosen: filterManifest.options.find(
+        ({ id }) => id === chosenFilters[filterId]
+      ),
       options: options.map(({ id: optionId, ...remaining }) => ({
         ...remaining,
         id: optionId,
@@ -137,23 +143,35 @@ export default function useFilter(options) {
     };
   }
 
-  return {
-    filters: reducer(filters, chosenFilters).map((filterManifest) => {
-      const { type } = filterManifest;
+  function createFilterFromManifest(filterManifest) {
+    const { type } = filterManifest;
 
-      switch (type) {
-        case "range":
-          return createRangeFilter(filterManifest);
-        case "multiselect":
-          return createMultiSelectFilter(filterManifest);
-        case "singleselect":
-          return createSingleSelectFilter(filterManifest);
-        case "tree":
-          return createTreeFilter(filterManifest);
-        default:
-          return null;
-      }
-    }),
+    switch (type) {
+      case "range":
+        return createRangeFilter(filterManifest);
+      case "multiselect":
+        return createMultiSelectFilter(filterManifest);
+      case "singleselect":
+        return createSingleSelectFilter(filterManifest);
+      case "tree":
+        return createTreeFilter(filterManifest);
+      default:
+        return null;
+    }
+  }
+
+  const filtersMapById = Object.fromEntries(
+    reducer(filters, chosenFilters).map((filterManifest) => [
+      filterManifest.id,
+      createFilterFromManifest(filterManifest),
+    ])
+  );
+
+  return {
+    filters: Object.values(filtersMapById),
+    filter(id) {
+      return filtersMapById[id];
+    },
     chosenFilters,
   };
 }
