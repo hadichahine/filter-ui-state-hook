@@ -2,9 +2,9 @@ import _ from "lodash";
 import { useState } from "react";
 
 export default function useFilter(options) {
-  const { filters, reducer = (filters) => filters } = options;
+  const { filters, reducer = (filters) => filters, initial = {} } = options;
 
-  const [chosenFilters, setChosenFilters] = useState({});
+  const [chosenFilters, setChosenFilters] = useState(initial);
 
   function createTreeFilter(filterManifest) {
     const { id: filterId, options = [], ...remaining } = filterManifest;
