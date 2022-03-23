@@ -1,6 +1,6 @@
 {
   "name": "filter-ui-state-hook",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "main": "dist/index.js",
   "module": "dist/main.js",
   "author": "Hadi Chahine <hadi.n.chahine@gmail.com>",
