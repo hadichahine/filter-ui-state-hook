@@ -100,3 +100,34 @@ test("test multiselect filter to toggle multiple options and request chosen", ()
   expect(result.current.filter("category").chosen[0].id).toBe("a");
   expect(result.current.filter("category").chosen[0].label).toBe("A");
 });
+
+test("test toggle function directly on filter", () => {
+  const { result } = renderHook(() =>
+    useFilter({
+      filters: [
+        {
+          id: "category",
+          label: "Category",
+          type: "multiselect",
+          options: [
+            {
+              id: "a",
+              label: "A",
+            },
+            {
+              id: "b",
+              label: "B",
+            },
+          ],
+        },
+      ],
+    })
+  );
+
+  act(() => {
+    result.current.filter("category").toggle("a");
+  });
+
+  expect(result.current.filter("category").chosen[0].id).toBe("a");
+  expect(result.current.filter("category").chosen[0].label).toBe("A");
+});

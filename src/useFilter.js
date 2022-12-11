@@ -92,31 +92,35 @@ export default function useFilter(options) {
   function createMultiSelectFilter(filterManifest) {
     const { id: filterId, options = [], ...remaining } = filterManifest;
 
+    const enrichedOptions = options.map(({ id: optionId, ...remaining }) => ({
+      ...remaining,
+      id: optionId,
+      choose() {
+        if ((chosenFilters[filterId] ?? []).includes(optionId))
+          setChosenFilters({
+            ...chosenFilters,
+            [filterId]: chosenFilters[filterId].filter((id) => id !== optionId),
+          });
+        else
+          setChosenFilters({
+            ...chosenFilters,
+            [filterId]: [...(chosenFilters[filterId] ?? []), optionId],
+          });
+      },
+      chosen: (chosenFilters[filterId] ?? []).includes(optionId),
+    }));
+
     return {
       ...remaining,
       id: filterId,
       chosen: (chosenFilters[filterId] ?? []).map((optionId) =>
         filterManifest.options.find(({ id }) => id === optionId)
       ),
-      options: options.map(({ id: optionId, ...remaining }) => ({
-        ...remaining,
-        id: optionId,
-        choose() {
-          if ((chosenFilters[filterId] ?? []).includes(optionId))
-            setChosenFilters({
-              ...chosenFilters,
-              [filterId]: chosenFilters[filterId].filter(
-                (id) => id !== optionId
-              ),
-            });
-          else
-            setChosenFilters({
-              ...chosenFilters,
-              [filterId]: [...(chosenFilters[filterId] ?? []), optionId],
-            });
-        },
-        chosen: (chosenFilters[filterId] ?? []).includes(optionId),
-      })),
+      toggle(givenId) {
+        if (enrichedOptions.find(({ id }) => givenId === id))
+          enrichedOptions.find(({ id }) => givenId === id).choose();
+      },
+      options: enrichedOptions,
     };
   }
 
