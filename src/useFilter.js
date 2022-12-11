@@ -167,7 +167,12 @@ export default function useFilter(options) {
   const filtersMapById = Object.fromEntries(
     reducer(filters, chosenFilters).map((filterManifest) => [
       filterManifest.id,
-      createFilterFromManifest(filterManifest),
+      {
+        ...createFilterFromManifest(filterManifest),
+        clear() {
+          setChosenFilters(_(chosenFilters).omit(filterManifest.id).value());
+        },
+      },
     ])
   );
 
